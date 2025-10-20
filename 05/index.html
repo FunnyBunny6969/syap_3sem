@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+//111=======================================================
+let currentCount = 1;
+
+function makeCounter() {
+    return function() {
+        return currentCount++;
+    };
+}
+
+let counter = makeCounter();
+let counter2 = makeCounter();
+
+//alert( counter() ); 
+//alert( counter() ); 
+//alert( counter2() );
+//alert( counter2() ); 
+//222=======================================================
+function calculateVolume(length) {
+    return function(width) {
+        return function(height) {
+            return length * width * height;
+        };
+    };
+}
+
+const volume1 = calculateVolume(2)(3)(4);
+console.log(volume1); 
+
+const volume2 = calculateVolume(5)(2)(10);
+console.log(volume2); 
+
+
+function createAreaCalculator(fixedLength) {
+    return function(width, height) {
+        return fixedLength * width * height;
+    };
+}
+
+const base2Volume = createAreaCalculator(2);
+
+console.log(base2Volume(3, 4));  
+console.log(base2Volume(3, 10)); 
+console.log(base2Volume(3, 1));  
+//333=======================================================
+let position = {x: 0, y: 0, z: 0};
+
+function* move() {
+    while(true) {
+        let cmd = prompt('CHOOSE DIRECTION (left/right/up/down/forward/back):');
+        
+        for(let i = 0; i < 10; i++) {
+            if(cmd === 'left') position.x--;
+            if(cmd === 'right') position.x++;
+            if(cmd === 'up') position.y++;
+            if(cmd === 'down') position.y--;
+            if(cmd === 'forward') position.z++;
+            if(cmd === 'back') position.z--;
+            
+            console.log(`STEP ${i+1}:`, position);
+        }
+        yield position; 
+    }
+}
+
+const movement = move();
+//console.log(movement.next());
+//444=======================================================
+const winEls = Object.keys(window);
+console.log(winEls);
+for (let index = 0; index < winEls.length; index++) {
+    console.log(winEls[index], typeof winEls[index]);
+}
+
+
+
+
+
+    </script>
+</body>
+</html>
