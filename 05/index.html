@@ -19,10 +19,10 @@ function makeCounter() {
 let counter = makeCounter();
 let counter2 = makeCounter();
 
-//alert( counter() ); 
-//alert( counter() ); 
-//alert( counter2() );
-//alert( counter2() ); 
+alert( counter() ); 
+alert( counter() ); 
+alert( counter2() );
+alert( counter2() ); 
 //222=======================================================
 function calculateVolume(length) {
     return function(width) {
@@ -72,18 +72,33 @@ function* move() {
 }
 
 const movement = move();
-//console.log(movement.next());
+console.log(movement.next());
 //444=======================================================
-const winEls = Object.keys(window);
-console.log(winEls);
-for (let index = 0; index < winEls.length; index++) {
-    console.log(winEls[index], typeof winEls[index]);
+var myGlobalVar = "Я глобальная переменная";
+function myGlobalFunc() {
+    return "Я глобальная функция";
 }
 
+console.log("=== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И ФУНКЦИИ ===");
+for (let key in window) {
+    if (window.hasOwnProperty(key) && (key === 'myGlobalVar' || key === 'myGlobalFunc')) {
+        if (typeof window[key] === 'function') {
+            console.log(`ФУНКЦИЯ: ${key} = ${window[key]()}`);
+        } else {
+            console.log(`ПЕРЕМЕННАЯ: ${key} = ${window[key]}`);
+        }
+    }
+}
 
+window.myGlobalVar = "Переопределенная переменная";
+window.myGlobalFunc = function() {
+    return "Переопределенная функция";
+};
 
-
-
+console.log("=== ПОСЛЕ ПЕРЕОПРЕДЕЛЕНИЯ ===");
+console.log(myGlobalVar); 
+console.log(myGlobalFunc()); 
+//==========================================================
     </script>
 </body>
 </html>
