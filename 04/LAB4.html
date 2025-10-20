@@ -340,10 +340,10 @@ function factorial(n) {
     return result;
 }
 
-function expensiveCalculation(a, b, c) {
+function expensiveCalculation(el) {
     let result = 0;
     for (let i = 0; i < 1000000; i++) {
-        result += Math.sin(a) * Math.cos(b) * Math.tan(c);
+        result += Math.sin(el.a) + Math.cos(el.b) + Math.tan(el.c);
     }
     return result;
 }
@@ -352,27 +352,34 @@ function expensiveCalculation(a, b, c) {
 console.log('\n=== ЗАДАЧА 4: Кеширование с WeakMap ===');
 const cache = new FunctionCache();
 
+// Создаем внешние объекты-параметры
+const factorialParams1 = { n: 15 };
+const factorialParams2 = { n: 20 };
+const calcParams = { a: 1, b: 2, c: 3 };
+
 console.log('\n--- Демонстрация 1: Факториал ---');
-console.log('Первый вызов factorial(15):');
-const result1 = cache.executeWithCache(factorial, 15);
+console.log('Первый вызов factorial с params1:');
+const result1 = cache.executeWithCache(factorial, factorialParams1);
 console.log(`Результат: ${result1}`);
 
-console.log('\nВторой вызов factorial(15):');
-const result2 = cache.executeWithCache(factorial, 15);
+console.log('\nВторой вызов factorial с params1:');
+const result2 = cache.executeWithCache(factorial, factorialParams1);
 console.log(`Результат: ${result2}`);
 
-console.log('\nВызов factorial(20):');
-const result3 = cache.executeWithCache(factorial, 20);
+console.log('\nВызов factorial с params2:');
+const result3 = cache.executeWithCache(factorial, factorialParams2);
 console.log(`Результат: ${result3}`);
 
+
 console.log('\n--- Демонстрация 2: Сложные вычисления ---');
-console.log('Первый вызов с параметрами (1, 2, 3):');
-const calc1 = cache.executeWithCache(expensiveCalculation, 1, 2, 3);
+console.log('Первый вызов с calcParams:');
+const calc1 = cache.executeWithCache(expensiveCalculation, calcParams);
 console.log(`Результат: ${calc1.toFixed(4)}`);
 
-console.log('\nВторой вызов с параметрами (1, 2, 3):');
-const calc2 = cache.executeWithCache(expensiveCalculation, 1, 2, 3);
+console.log('\nВторой вызов с calcParams:');
+const calc2 = cache.executeWithCache(expensiveCalculation, calcParams);
 console.log(`Результат: ${calc2.toFixed(4)}`);
+
 
 console.log('\n--- Демонстрация 3: Работа с объектами ---');
 const user = { id: 1, name: 'John' };
