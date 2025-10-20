@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+//111=====================================================
+function basicOperation(operation, value1, value2) {
+    switch(operation) {
+        case '+':
+            return value1 + value2;
+        case '-':
+            return value1 - value2;
+        case '*':
+            return value1 * value2;
+        case '/':
+            return value1 / value2;
+        default:
+            return 0; 
+    }
+}
+
+console.log(basicOperation('+', 5, 10));
+console.log(basicOperation('-', 5, 10));
+console.log(basicOperation('*', 5, 10));
+console.log(basicOperation('/', 5, 10));
+//222=====================================================
+function sumOfCubes(n) {
+    let sum = 0;
+    for (let i = 1; i <= n; i++) {
+        sum += Math.pow(i, 3); 
+    }
+    return sum;
+}
+
+console.log(sumOfCubes(3));
+//333=====================================================
+function average(numbers) {
+    if (numbers.length === 0) return 0;
+    
+    let sum = 0;
+    for (let i = 0; i < numbers.length; i++) {
+        sum += numbers[i];
+    }
+    return sum / numbers.length;
+}
+
+console.log(average([1, 2, 3, 4, 5])); 
+//444=====================================================
+function reverseEnglish(str) {
+    const englishOnly = str.replace(/[^a-zA-Z]/g, '');
+    return englishOnly.split('').reverse().join('');
+}
+
+console.log(reverseEnglish("JavaScript")); 
+console.log(reverseEnglish("JavaScr53э? ipt"));
+//555=====================================================
+function repeatString(n, s) {
+    return s.repeat(n);
+}
+
+console.log(repeatString(3, "Hello")); 
+//666=====================================================
+function arrayDifference(arr1, arr2) {
+    return arr1.filter(item => !arr2.includes(item));
+}
+
+const arr1 = ["apple", "banana", "orange", "grape"];
+const arr2 = ["banana", "grape", "kiwi"];
+console.log(arrayDifference(arr1, arr2)); 
+//=====================================================
+    </script>
+</body>
+</html>

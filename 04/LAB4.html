@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <script>
+//111=================================================================
+class ProductManager {
+    constructor() {
+        this.products = new Set();
+    }
+
+    addProduct(product) {
+        this.products.add(product);
+    }
+
+    removeProduct(product) {
+        return this.products.delete(product);
+    }
+
+    hasProduct(product) {
+        return this.products.has(product);
+    }
+
+    getProductCount() {
+        return this.products.size;
+    }
+
+    getAllProducts() {
+        return Array.from(this.products);
+    }
+
+    clearProducts() {
+        this.products.clear();
+    }
+}
+
+
+const manager = new ProductManager();
+manager.addProduct("Ноутбук");
+manager.addProduct("Мышь");
+manager.addProduct("Клавиатура");
+
+console.log("Количество товаров:", manager.getProductCount()); 
+console.log("Есть ли мышь?", manager.hasProduct("Мышь")); 
+manager.removeProduct("Мышь");
+console.log("Количество после удаления:", manager.getProductCount()); 
+//222=================================================================
+class StudentManager {
+    constructor() {
+        this.students = new Set();
+    }
+
+    addStudent(recordBookNumber, group, fullName) {
+        const studentId = Symbol(`student_${recordBookNumber}`);
+        
+        const student = {
+            id: studentId,
+            recordBookNumber: parseInt(recordBookNumber),
+            group: group.toString(),
+            fullName: fullName.toString()
+        };
+
+        for (let stud of this.students) {
+            if (stud.recordBookNumber === student.recordBookNumber) {
+                throw new Error(`Студент с номером зачетки ${recordBookNumber} уже существует`);
+            }
+        }
+
+        this.students.add(student);
+        return student;
+    }
+
+    removeStudentByRecordNumber(recordBookNumber) {
+        const number = parseInt(recordBookNumber);
+        for (let student of this.students) {
+            if (student.recordBookNumber === number) {
+                this.students.delete(student);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    filterStudentsByGroup(group) {
+        const result = [];
+        for (let student of this.students) {
+            if (student.group === group) {
+                result.push(student);
+            }
+        }
+        return result;
+    }
+
+    sortStudentsByRecordNumber() {
+        return Array.from(this.students).sort((a, b) => 
+            a.recordBookNumber - b.recordBookNumber
+        );
+    }
+
+    getAllStudents() {
+        return Array.from(this.students);
+    }
+
+    findStudentByRecordNumber(recordBookNumber) {
+        const number = parseInt(recordBookNumber);
+        for (let student of this.students) {
+            if (student.recordBookNumber === number) {
+                return student;
+            }
+        }
+        return null;
+    }
+}
+
+console.log('\n=== ЗАДАЧА 2: Управление студентами с Set ===');
+const studentManager = new StudentManager();
+
+studentManager.addStudent(12345, "ИТ-101", "Иванов Иван Иванович");
+studentManager.addStudent(12346, "ИТ-101", "Петров Петр Петрович");
+studentManager.addStudent(12340, "ИТ-102", "Сидорова Мария Сергеевна");
+studentManager.addStudent(12355, "ИТ-102", "Козлов Алексей Владимирович");
+
+console.log('Все студенты:');
+studentManager.getAllStudents().forEach(student => {
+    console.log(`  ${student.recordBookNumber}: ${student.fullName} (${student.group})`);
+});
+
+console.log('\nСтуденты группы ИТ-101:');
+const it101Students = studentManager.filterStudentsByGroup("ИТ-101");
+it101Students.forEach(student => {
+    console.log(`  ${student.fullName}`);
+});
+
+console.log('\nСтуденты отсортированные по номеру зачетки:');
+const sortedStudents = studentManager.sortStudentsByRecordNumber();
+sortedStudents.forEach(student => {
+    console.log(`  ${student.recordBookNumber}: ${student.fullName}`);
+});
+
+studentManager.removeStudentByRecordNumber(12346);
+console.log('\nПосле удаления студента с номером 12346:');
+console.log('Оставшиеся студенты:', studentManager.getAllStudents().map(s => s.recordBookNumber));
+//333=================================================================
+class ProductStorageMap {
+    constructor() {
+        this.products = new Map();
+        this.nextId = 1;
+    }
+
+    addProduct(name, quantity, price) {
+        if (typeof name !== 'string' || name.trim() === '') {
+            throw new Error('Название товара обязательно');
+        }
+        if (quantity < 0 || price < 0) {
+            throw new Error('Количество и цена не могут быть отрицательными');
+        }
+
+        const id = this.nextId++;
+        const product = {
+            id,
+            name: name.trim(),
+            quantity: parseInt(quantity),
+            price: parseFloat(price)
+        };
+
+        this.products.set(id, product);
+        return id;
+    }
+
+    removeProductById(id) {
+        return this.products.delete(parseInt(id));
+    }
+
+    removeProductsByName(name) {
+        let removedCount = 0;
+        const nameToRemove = name.toString().trim();
+        
+        for (let [id, product] of this.products) {
+            if (product.name === nameToRemove) {
+                this.products.delete(id);
+                removedCount++;
+            }
+        }
+        return removedCount;
+    }
+
+    updateProductQuantity(id, newQuantity) {
+        const productId = parseInt(id);
+        const product = this.products.get(productId);
+        
+        if (!product) {
+            throw new Error(`Товар с ID ${id} не найден`);
+        }
+        if (newQuantity < 0) {
+            throw new Error('Количество не может быть отрицательным');
+        }
+
+        product.quantity = parseInt(newQuantity);
+        return true;
+    }
+
+    updateProductPrice(id, newPrice) {
+        const productId = parseInt(id);
+        const product = this.products.get(productId);
+        
+        if (!product) {
+            throw new Error(`Товар с ID ${id} не найден`);
+        }
+        if (newPrice < 0) {
+            throw new Error('Цена не может быть отрицательной');
+        }
+
+        product.price = parseFloat(newPrice);
+        return true;
+    }
+
+    getPositionsCount() {
+        return this.products.size;
+    }
+
+    getTotalValue() {
+        let total = 0;
+        for (let product of this.products.values()) {
+            total += product.quantity * product.price;
+        }
+        return total;
+    }
+
+    getProductTotalValue(id) {
+        const product = this.products.get(parseInt(id));
+        return product ? product.quantity * product.price : 0;
+    }
+
+    getAllProducts() {
+        return Array.from(this.products.values());
+    }
+
+    findProductsByName(name) {
+        const searchName = name.toString().trim().toLowerCase();
+        return Array.from(this.products.values()).filter(product => 
+            product.name.toLowerCase().includes(searchName)
+        );
+    }
+
+    getProductsObject() {
+        const obj = Object.fromEntries(this.products);
+        console.log('Object.keys:', Object.keys(obj));
+        console.log('Object.values:', Object.values(obj));
+        console.log('Object.entries:', Object.entries(obj));
+        return obj;
+    }
+}
+
+
+console.log('\n=== ЗАДАЧА 3: Хранилище товаров с Map ===');
+const storage = new ProductStorageMap();
+
+const id1 = storage.addProduct("Ноутбук", 5, 50000);
+const id2 = storage.addProduct("Мышь", 10, 1500);
+const id3 = storage.addProduct("Клавиатура", 8, 3000);
+const id4 = storage.addProduct("Мышь", 3, 1200);
+const id5 = storage.addProduct("Монитор", 4, 15000);
+
+console.log('Все товары:');
+storage.getAllProducts().forEach(product => {
+    console.log(`  ${product.id}: ${product.name} - ${product.quantity}шт. по ${product.price}руб.`);
+});
+
+console.log('\nКоличество позиций:', storage.getPositionsCount());
+console.log('Общая стоимость всех товаров:', storage.getTotalValue(), 'руб.');
+
+const removedCount = storage.removeProductsByName("Мышь");
+console.log(`\nУдалено товаров "Мышь": ${removedCount}`);
+console.log('Количество позиций после удаления:', storage.getPositionsCount());
+
+storage.updateProductQuantity(id1, 3);
+storage.updateProductPrice(id3, 2500);
+console.log('\nПосле обновления цены и количества:');
+console.log('Общая стоимость:', storage.getTotalValue(), 'руб.');
+
+console.log('\nПоиск товаров с "ит":');
+const foundProducts = storage.findProductsByName("ит");
+foundProducts.forEach(product => {
+    console.log(`  ${product.name} - ${product.quantity}шт.`);
+});
+
+console.log('\nДемонстрация Object методов:');
+storage.getProductsObject();
+//444=================================================================
+class FunctionCache {
+    constructor() {
+        this.cache = new WeakMap();
+    }
+
+    createKey(...args) {
+        if (args.length === 1 && typeof args[0] === 'object' && args[0] !== null) {
+            return args[0];
+        }
+        return { args };
+    }
+
+    executeWithCache(func, ...args) {
+        const key = this.createKey(...args);
+        
+        if (this.cache.has(key)) {
+            console.log('Результат взят из кеша');
+            return this.cache.get(key);
+        }
+
+        console.log('Выполняем вычисления...');
+        const startTime = performance.now();
+        const result = func(...args);
+        const executionTime = (performance.now() - startTime).toFixed(2);
+        
+        console.log(`Вычисления заняли: ${executionTime}ms`);
+        
+        this.cache.set(key, result);
+        return result;
+    }
+
+    hasInCache(...args) {
+        const key = this.createKey(...args);
+        return this.cache.has(key);
+    }
+}
+
+// Функции для демонстрации
+function factorial(n) {
+    if (n <= 1) return 1;
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+        // Немного замедлим для наглядности
+        for (let j = 0; j < 10000; j++) {}
+    }
+    return result;
+}
+
+function expensiveCalculation(a, b, c) {
+    let result = 0;
+    for (let i = 0; i < 1000000; i++) {
+        result += Math.sin(a) * Math.cos(b) * Math.tan(c);
+    }
+    return result;
+}
+
+// ДЕМОНСТРАЦИЯ
+console.log('\n=== ЗАДАЧА 4: Кеширование с WeakMap ===');
+const cache = new FunctionCache();
+
+console.log('\n--- Демонстрация 1: Факториал ---');
+console.log('Первый вызов factorial(15):');
+const result1 = cache.executeWithCache(factorial, 15);
+console.log(`Результат: ${result1}`);
+
+console.log('\nВторой вызов factorial(15):');
+const result2 = cache.executeWithCache(factorial, 15);
+console.log(`Результат: ${result2}`);
+
+console.log('\nВызов factorial(20):');
+const result3 = cache.executeWithCache(factorial, 20);
+console.log(`Результат: ${result3}`);
+
+console.log('\n--- Демонстрация 2: Сложные вычисления ---');
+console.log('Первый вызов с параметрами (1, 2, 3):');
+const calc1 = cache.executeWithCache(expensiveCalculation, 1, 2, 3);
+console.log(`Результат: ${calc1.toFixed(4)}`);
+
+console.log('\nВторой вызов с параметрами (1, 2, 3):');
+const calc2 = cache.executeWithCache(expensiveCalculation, 1, 2, 3);
+console.log(`Результат: ${calc2.toFixed(4)}`);
+
+console.log('\n--- Демонстрация 3: Работа с объектами ---');
+const user = { id: 1, name: 'John' };
+
+console.log('Первый вызов с объектом user:');
+const objResult1 = cache.executeWithCache(JSON.stringify, user);
+console.log(`Результат: ${objResult1}`);
+
+console.log('\nВторой вызов с объектом user:');
+const objResult2 = cache.executeWithCache(JSON.stringify, user);
+console.log(`Результат: ${objResult2}`);
+
+// Демонстрация автоматической сборки мусора
+console.log('\n--- Демонстрация автоматической сборки мусора ---');
+let tempObj = { temp: 'data' };
+cache.executeWithCache(JSON.stringify, tempObj);
+console.log('До очистки - есть в кеше?', cache.hasInCache(tempObj));
+tempObj = null;
+console.log('После очистки - объект удален, кеш очистится автоматически');
+
+   </script> 
+</body>
+</html>

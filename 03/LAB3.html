@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+//111=====================================================
+function flattenArrays(arrays) {
+    return arrays.reduce((acc, current) => {
+        if (Array.isArray(current)) 
+            return acc.concat(flattenArrays(current));
+        return acc.concat(current);
+    }, []);
+}
+
+
+const nestedArrays = [1, [1, 2, [3, 4]], [2, 4]];
+console.log(flattenArrays(nestedArrays)); 
+//222=====================================================
+function deepSum(arr) {
+    return arr.reduce((sum, element) => {
+        if (Array.isArray(element)) {
+            return sum + deepSum(element);
+        }
+        return sum + element;
+    }, 0);
+}
+
+
+const nestedArray = [1, [2, 3], [4, [5, 6]], 7];
+console.log(deepSum(nestedArray)); // 28
+//333=====================================================
+function groupStudentsOver17(students) {
+    return students.reduce((groups, student) => {
+        if (student.age > 17) {
+            const groupId = student.groupId;
+            if (!groups[groupId]) {
+                groups[groupId] = [];
+            }
+            groups[groupId].push(student);
+        }
+        return groups;
+    }, {});
+}
+
+
+const students = [
+    { name: "Анна", age: 18, groupId: 1 },
+    { name: "Иван", age: 17, groupId: 1 },
+    { name: "Мария", age: 19, groupId: 2 },
+    { name: "Петр", age: 20, groupId: 1 }
+];
+
+console.log(groupStudentsOver17(students));
+//444=====================================================
+function calculateDifference(str) {
+    const total1 = str.split('').map(char => 
+        char.charCodeAt(0)).join('');
+    
+    const total2 = total1.split('').map(digit => 
+        digit === '7' ? '1' : digit).join('');
+    
+    return parseInt(total1) - parseInt(total2);
+}
+
+
+console.log(calculateDifference('ABC')); // 6
+console.log(calculateDifference('ABC7')); // 66666
+//555=====================================================
+function extend(...objects) {
+    return Object.assign({}, ...objects);
+}
+
+
+console.log(extend({a: 1, b: 2}, {c: 3}));
+console.log(extend({a: 1, b: 2}, {c: 3}, {d: 4}));
+console.log(extend({a: 1, b: 2}, {a: 3, c: 3}));
+console.log(extend({a: 1, b: 2}, {a: 3, c: 3}, [1,2,3,4,5,5,5,55555]));
+//666=====================================================
+function buildTower(floors) {
+    const tower = [];
+    
+    for (let i = 0; i < floors; i++) {
+        const spaces = ' '.repeat(floors - i - 1);
+        const stars = '*'.repeat(2 * i + 1);
+        tower.push(spaces + stars + spaces);
+    }
+    
+    return tower;
+}
+
+
+console.log(buildTower(3));
+console.log(buildTower(5));
+//========================================================
+    </script>
+</body>
+</html>
