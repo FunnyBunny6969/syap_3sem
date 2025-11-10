@@ -2,4 +2,5 @@
 - [x] LAB2
 - [x] LAB3
 - [X] LAB4
-- [ ] LAB5
+- [X] LAB5
+- [X] LAB6
