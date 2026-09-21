@@ -8,6 +8,7 @@
 <body>
     <script>
 //111=====================================================
+console.log('=== TASK1 ===');
 function flattenArrays(arrays) {
     return arrays.reduce((acc, current) => {
         if (Array.isArray(current)) 
@@ -20,6 +21,7 @@ function flattenArrays(arrays) {
 const nestedArrays = [1, [1, 2, [3, 4]], [2, 4]];
 console.log(flattenArrays(nestedArrays)); 
 //222=====================================================
+console.log('=== TASK2 ===');
 function deepSum(arr) {
     return arr.reduce((sum, element) => {
         if (Array.isArray(element)) {
@@ -33,68 +35,126 @@ function deepSum(arr) {
 const nestedArray = [1, [2, 3], [4, [5, 6]], 7];
 console.log(deepSum(nestedArray)); // 28
 //333=====================================================
-function groupStudentsOver17(students) {
-    return students.reduce((groups, student) => {
-        if (student.age > 17) {
-            const groupId = student.groupId;
-            if (!groups[groupId]) {
-                groups[groupId] = [];
-            }
-            groups[groupId].push(student);
-        }
-        return groups;
-    }, {});
-}
-
-
-const students = [
-    { name: "Анна", age: 18, groupId: 1 },
-    { name: "Иван", age: 17, groupId: 1 },
-    { name: "Мария", age: 19, groupId: 2 },
-    { name: "Петр", age: 20, groupId: 1 }
+console.log('=== TASK3 ===');
+const events = [
+  {
+    title: 'Frontend Meetup',
+    category: 'education',
+    participants: 45,
+    capacity: 60,
+  },
+  {
+    title: 'Campus Run',
+    category: 'sport',
+    participants: 30,
+    capacity: 30,
+  },
+  {
+    title: 'JavaScript Workshop',
+    category: 'education',
+    participants: 18,
+    capacity: 25,
+  },
+  {
+    title: 'Music Evening',
+    category: 'culture',
+    participants: 70,
+    capacity: 100,
+  },
 ];
 
-console.log(groupStudentsOver17(students));
+function groupAvailableEvents(events) {
+	return events
+		.filter((event) => event.participants < event.capacity)
+		.reduce((acc, event) => {
+		if (!acc[event.category]) {
+			acc[event.category] = [];
+		}
+		acc[event.category].push(event);
+		return acc;
+		}, {});
+}
+
+console.log(groupAvailableEvents(events));
 //444=====================================================
-function calculateDifference(str) {
-    const total1 = str.split('').map(char => 
-        char.charCodeAt(0)).join('');
-    
-    const total2 = total1.split('').map(digit => 
-        digit === '7' ? '1' : digit).join('');
-    
-    return parseInt(total1) - parseInt(total2);
+console.log('=== TASK4 ===');
+function analyzeEventTitle(title) {
+	const words = title
+		.trim()
+		.split(' ')
+		.filter((word) => word !== '');
+
+	const wordCount = words.length;
+	const longestWord = words.reduce(
+		(longest, word) => (word.length > longest.length ? word : longest),
+		''
+	);
+	const averageLength =
+		words.reduce((sum, word) => sum + word.length, 0) / wordCount;
+
+	return {
+		wordCount,
+		longestWord,
+		averageLength,
+	};
 }
 
-
-console.log(calculateDifference('ABC')); // 6
-console.log(calculateDifference('ABC7')); // 66666
+console.log(analyzeEventTitle('  JavaScript   for modern interfaces  '));
 //555=====================================================
-function extend(...objects) {
-    return Object.assign({}, ...objects);
+console.log('=== TASK5 ===');
+
+const defaultSettings = { theme: 'light', language: 'ru', pageSize: 10 };
+const userSettings    = { theme: 'dark', pageSize: 20 };
+const sessionSettings = { language: 'en' };
+
+function mergeSettings(...sources) {
+  return Object.assign({}, ...sources);
 }
 
-
-console.log(extend({a: 1, b: 2}, {c: 3}));
-console.log(extend({a: 1, b: 2}, {c: 3}, {d: 4}));
-console.log(extend({a: 1, b: 2}, {a: 3, c: 3}));
-console.log(extend({a: 1, b: 2}, {a: 3, c: 3}, [1,2,3,4,5,5,5,55555]));
+const result = mergeSettings(defaultSettings, userSettings, sessionSettings);
+console.log(result);
+console.log(mergeSettings());
 //666=====================================================
-function buildTower(floors) {
-    const tower = [];
-    
-    for (let i = 0; i < floors; i++) {
-        const spaces = ' '.repeat(floors - i - 1);
-        const stars = '*'.repeat(2 * i + 1);
-        tower.push(spaces + stars + spaces);
-    }
-    
-    return tower;
+console.log('=== TASK6 ===');
+function createStorageBar(used, limit, length) {
+	const isValid =
+		typeof used === 'number' &&
+		used >= 0 &&
+		typeof limit === 'number' &&
+		limit > 0 &&
+		used <= limit &&
+		Number.isInteger(length) &&
+		length > 0;
+
+	if (!isValid) {
+		return 'Некорректные данные';
+	}
+
+	const filled = Math.round((used / limit) * length);
+	const empty = length - filled;
+
+	return '#'.repeat(filled) + '-'.repeat(empty);
 }
 
+function createStorageReport(storages, length) {
+	return storages.map((storage) => {
+		const bar = createStorageBar(storage.used, storage.limit, length);
 
-console.log(buildTower(3));
-console.log(buildTower(5));
+		if (bar === 'Некорректные данные') {
+		return `${storage.user}: Некорректные данные`;
+		}
+
+		const percent = Math.round((storage.used / storage.limit) * 100);
+		return `${storage.user}: ${bar} ${percent}%`;
+	});
+}
+
+const storages = [
+	{ user: 'Анна', used: 45, limit: 60 },
+	{ user: 'Максим', used: 100, limit: 100 },
+];
+
+console.log(createStorageReport(storages, 10));
 //========================================================
     </script>
 </body>

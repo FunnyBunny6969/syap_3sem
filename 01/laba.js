@@ -15,10 +15,7 @@ console.log(typeof result);
 console.log(typeof answer);
 console.log(typeof no);
 //================================
-function calculateSquares() {
-    let wpr = 45;  
-    let hpr = 21; 
-    
+function calculateSquares(wpr, hpr) {
     let skvadrat = 5; 
 
     let wkv = Math.floor(wpr / skvadrat);
@@ -29,7 +26,7 @@ function calculateSquares() {
     return total;
 }
 
-console.log(calculateSquares()); 
+console.log(calculateSquares(45, 21)); 
 //================================
 i = 2;
 a = ++i; 
@@ -88,8 +85,9 @@ teacherName = teacherName.toLowerCase();
 let inputName = prompt("ENTER ФИО");
 inputName = inputName.toLowerCase();
 if (teacherName.includes(inputName)) 
-        alert("CORRECT");
-else    alert("HAHA OSHIBKA");
+    alert("CORRECT");
+else    
+    alert("HAHA OSHIBKA");
 //================================
 
 let russian = prompt("Сдал экзамен по русскому языку? (да/нет)").toLowerCase() === 'да';
