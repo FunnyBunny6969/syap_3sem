@@ -1,7 +1,7 @@
 - [X] LAB1
 - [x] LAB2
 - [x] LAB3
-- [X] LAB4
-- [X] LAB5
-- [X] LAB6
-- [X] LAB7
+- [-] LAB4
+- [-] LAB5
+- [-] LAB6
+- [-] LAB7

@@ -1,405 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-   <script>
-//111=================================================================
-class ProductManager {
-    constructor() {
-        this.products = new Set();
-    }
+    <script>
+        //111=================================================================
+        const categories = new Set();
 
-    addProduct(product) {
-        this.products.add(product);
-    }
+        function addCategory(category) {
+            categories.add(category);
+        }
 
-    removeProduct(product) {
-        return this.products.delete(product);
-    }
+        function removeCategory(category) {
+            categories.delete(category);
+        }
 
-    hasProduct(product) {
-        return this.products.has(product);
-    }
+        function hasCategory(category) {
+            return categories.has(category);
+        }
 
-    getProductCount() {
-        return this.products.size;
-    }
+        function getCategoriesCount() {
+            return categories.size;
+        }
 
-    getAllProducts() {
-        return Array.from(this.products);
-    }
+        function getCategories() {
+            return [...categories].sort();
+        }
 
-    clearProducts() {
-        this.products.clear();
-    }
-}
+        addCategory('Развлечения');
+        addCategory('Образование');
+        addCategory('Спорт');
+        addCategory('Развлечения');
 
+        console.log(getCategories());
+        console.log(getCategoriesCount());
+        console.log(hasCategory('Спорт'));
+        removeCategory('Спорт');
+        console.log(getCategories());
+        //222=================================================================
+        const events = [
+            {id: 1, title: 'Вечер настольных игр', category: 'Развлечения', participants: 24, isActive: true},
+            {id: 2, title: 'Frontend Meetup', category: 'Образование', participants: 40, isActive: true},
+            {id: 3, title: 'Осенний забег', category: 'Спорт', participants: 18, isActive: false},
+        ];
 
-const manager = new ProductManager();
-manager.addProduct("Ноутбук");
-manager.addProduct("Мышь");
-manager.addProduct("Клавиатура");
+        const findEventById = (id) => events.find((event) => event.id === id);
+        const getActiveEvents = () => events.filter((event) => event.isActive);
+        const getEventsByCategory = (category) =>
+            events.filter((event) => event.category === category);
+        const hasEventsWithoutParticipants = () =>
+            events.some((event) => event.participants === 0);
+        const sortByParticipants = () =>
+            [...events].sort((a, b) => a.participants - b.participants);
+        const getEventTitles = () => events.map((event) => event.title);
+        const getTotalParticipants = () =>
+            events.reduce((sum, event) => sum + event.participants, 0);
 
-console.log("Количество товаров:", manager.getProductCount()); 
-console.log("Есть ли мышь?", manager.hasProduct("Мышь")); 
-manager.removeProduct("Мышь");
-console.log("Количество после удаления:", manager.getProductCount()); 
-//222=================================================================
-class StudentManager {
-    constructor() {
-        this.students = new Set();
-    }
+        console.log(findEventById(2));
+        console.log(getActiveEvents());
+        console.log(getEventsByCategory('Спорт'));
+        console.log(hasEventsWithoutParticipants());
+        console.log(sortByParticipants());
+        console.log(getEventTitles());
+        console.log(getTotalParticipants());
+        //333=================================================================
+        const registrations = new Map();
 
-    addStudent(recordBookNumber, group, fullName) {
-        const studentId = Symbol(`student_${recordBookNumber}`);
-        
-        const student = {
-            id: studentId,
-            recordBookNumber: parseInt(recordBookNumber),
-            group: group.toString(),
-            fullName: fullName.toString()
+        registrations.set(1, {
+            title: 'Вечер настольных игр',
+            participants: 2,
+            price: 10,
+        });
+
+        function addRegistration(id, title, participants, price) {
+            if (registrations.has(id)) {
+                // Если запись уже существует — увеличиваем количество участников
+                const existing = registrations.get(id);
+                existing.participants += participants;
+            } else {
+                registrations.set(id, {title, participants, price});
+            }
+        }
+
+        function hasRegistration(id) {
+            return registrations.has(id);
+        }
+
+        function removeRegistration(id) {
+            registrations.delete(id);
+        }
+
+        function updateParticipants(id, participants) {
+            if (registrations.has(id)) {
+                registrations.get(id).participants = participants;
+            }
+        }
+
+        function updatePrice(id, price) {
+            if (registrations.has(id)) {
+                registrations.get(id).price = price;
+            }
+        }
+
+        function getRegistrationsCount() {
+            return registrations.size;
+        }
+
+        function getTotalTickets() {
+            let total = 0;
+            for (const reg of registrations.values()) {
+                total += reg.participants;
+            }
+            return total;
+        }
+
+        function getTotalPrice() {
+            let total = 0;
+            for (const reg of registrations.values()) {
+                total += reg.participants * reg.price;
+            }
+            return total;
+        }
+
+        addRegistration(1, 'Вечер настольных игр', 2, 10);
+        addRegistration(2, 'Frontend Meetup', 5, 15);
+        addRegistration(3, 'Осенний забег', 3, 8);
+
+        console.log(hasRegistration(2));        // true
+        console.log(getRegistrationsCount());   // 3
+        console.log(getTotalTickets());         // 4 + 5 + 3 = 12
+        console.log(getTotalPrice());           // 4*10 + 5*15 + 3*8 = 40 + 75 + 24 = 139
+
+        updateParticipants(2, 10);
+        updatePrice(2, 20);
+        console.log(getTotalTickets());         // 4 + 10 + 3 = 17
+        console.log(getTotalPrice());           // 4*10 + 10*20 + 3*8 = 40 + 200 + 24 = 264
+
+        removeRegistration(3);
+        console.log(getRegistrationsCount());   // 2
+        //444=================================================================
+        const statistics = {
+            education: 12,
+            sport: 8,
+            entertainment: 15,
         };
 
-        for (let stud of this.students) {
-            if (stud.recordBookNumber === student.recordBookNumber) {
-                throw new Error(`Студент с номером зачетки ${recordBookNumber} уже существует`);
-            }
-        }
+        // Названия категорий через Object.keys
+        const keys = Object.keys(statistics);
+        console.log(keys); // ['education', 'sport', 'entertainment']
 
-        this.students.add(student);
-        return student;
-    }
+        // Количество мероприятий через Object.values
+        const values = Object.values(statistics);
+        console.log(values); // [12, 8, 15]
 
-    removeStudentByRecordNumber(recordBookNumber) {
-        const number = parseInt(recordBookNumber);
-        for (let student of this.students) {
-            if (student.recordBookNumber === number) {
-                this.students.delete(student);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    filterStudentsByGroup(group) {
-        const result = [];
-        for (let student of this.students) {
-            if (student.group === group) {
-                result.push(student);
-            }
-        }
-        return result;
-    }
-
-    sortStudentsByRecordNumber() {
-        return Array.from(this.students).sort((a, b) => 
-            a.recordBookNumber - b.recordBookNumber
-        );
-    }
-
-    getAllStudents() {
-        return Array.from(this.students);
-    }
-
-    findStudentByRecordNumber(recordBookNumber) {
-        const number = parseInt(recordBookNumber);
-        for (let student of this.students) {
-            if (student.recordBookNumber === number) {
-                return student;
-            }
-        }
-        return null;
-    }
-}
-
-console.log('\n=== ЗАДАЧА 2: Управление студентами с Set ===');
-const studentManager = new StudentManager();
-
-studentManager.addStudent(12345, "ИТ-101", "Иванов Иван Иванович");
-studentManager.addStudent(12346, "ИТ-101", "Петров Петр Петрович");
-studentManager.addStudent(12340, "ИТ-102", "Сидорова Мария Сергеевна");
-studentManager.addStudent(12355, "ИТ-102", "Козлов Алексей Владимирович");
-
-console.log('Все студенты:');
-studentManager.getAllStudents().forEach(student => {
-    console.log(`  ${student.recordBookNumber}: ${student.fullName} (${student.group})`);
-});
-
-console.log('\nСтуденты группы ИТ-101:');
-const it101Students = studentManager.filterStudentsByGroup("ИТ-101");
-it101Students.forEach(student => {
-    console.log(`  ${student.fullName}`);
-});
-
-console.log('\nСтуденты отсортированные по номеру зачетки:');
-const sortedStudents = studentManager.sortStudentsByRecordNumber();
-sortedStudents.forEach(student => {
-    console.log(`  ${student.recordBookNumber}: ${student.fullName}`);
-});
-
-studentManager.removeStudentByRecordNumber(12346);
-console.log('\nПосле удаления студента с номером 12346:');
-console.log('Оставшиеся студенты:', studentManager.getAllStudents().map(s => s.recordBookNumber));
-//333=================================================================
-class ProductStorageMap {
-    constructor() {
-        this.products = new Map();
-        this.nextId = 1;
-    }
-
-    addProduct(name, quantity, price) {
-        if (typeof name !== 'string' || name.trim() === '') {
-            throw new Error('Название товара обязательно');
-        }
-        if (quantity < 0 || price < 0) {
-            throw new Error('Количество и цена не могут быть отрицательными');
-        }
-
-        const id = this.nextId++;
-        const product = {
-            id,
-            name: name.trim(),
-            quantity: parseInt(quantity),
-            price: parseFloat(price)
+        // Строки вида "Образование: 12" через Object.entries
+        const labels = {
+            education: 'Образование',
+            sport: 'Спорт',
+            entertainment: 'Развлечения',
         };
 
-        this.products.set(id, product);
-        return id;
-    }
-
-    removeProductById(id) {
-        return this.products.delete(parseInt(id));
-    }
-
-    removeProductsByName(name) {
-        let removedCount = 0;
-        const nameToRemove = name.toString().trim();
-        
-        for (let [id, product] of this.products) {
-            if (product.name === nameToRemove) {
-                this.products.delete(id);
-                removedCount++;
-            }
-        }
-        return removedCount;
-    }
-
-    updateProductQuantity(id, newQuantity) {
-        const productId = parseInt(id);
-        const product = this.products.get(productId);
-        
-        if (!product) {
-            throw new Error(`Товар с ID ${id} не найден`);
-        }
-        if (newQuantity < 0) {
-            throw new Error('Количество не может быть отрицательным');
-        }
-
-        product.quantity = parseInt(newQuantity);
-        return true;
-    }
-
-    updateProductPrice(id, newPrice) {
-        const productId = parseInt(id);
-        const product = this.products.get(productId);
-        
-        if (!product) {
-            throw new Error(`Товар с ID ${id} не найден`);
-        }
-        if (newPrice < 0) {
-            throw new Error('Цена не может быть отрицательной');
-        }
-
-        product.price = parseFloat(newPrice);
-        return true;
-    }
-
-    getPositionsCount() {
-        return this.products.size;
-    }
-
-    getTotalValue() {
-        let total = 0;
-        for (let product of this.products.values()) {
-            total += product.quantity * product.price;
-        }
-        return total;
-    }
-
-    getProductTotalValue(id) {
-        const product = this.products.get(parseInt(id));
-        return product ? product.quantity * product.price : 0;
-    }
-
-    getAllProducts() {
-        return Array.from(this.products.values());
-    }
-
-    findProductsByName(name) {
-        const searchName = name.toString().trim().toLowerCase();
-        return Array.from(this.products.values()).filter(product => 
-            product.name.toLowerCase().includes(searchName)
+        const entries = Object.entries(statistics).map(
+            ([key, value]) => `${labels[key]}: ${value}`
         );
-    }
+        console.log(entries);
+        // ['Образование: 12', 'Спорт: 8', 'Развлечения: 15']
 
-    getProductsObject() {
-        const obj = Object.fromEntries(this.products);
-        console.log('Object.keys:', Object.keys(obj));
-        console.log('Object.values:', Object.values(obj));
-        console.log('Object.entries:', Object.entries(obj));
-        return obj;
-    }
-}
+        // Общее количество мероприятий
+        const total = Object.values(statistics).reduce((sum, value) => sum + value, 0);
+        console.log(total); // 35
 
+        // Новый объект только с категориями, где больше 10 мероприятий
+        const filteredStatistics = Object.fromEntries(
+            Object.entries(statistics).filter(([, value]) => value > 10)
+        );
+        console.log(filteredStatistics);
+        // { education: 12, entertainment: 15 }
+        //555=================================================================
+        const cache = new WeakMap();
 
-console.log('\n=== ЗАДАЧА 3: Хранилище товаров с Map ===');
-const storage = new ProductStorageMap();
+        const MAX_PLACES = 40; // максимальная вместимость мероприятия
 
-const id1 = storage.addProduct("Ноутбук", 5, 50000);
-const id2 = storage.addProduct("Мышь", 10, 1500);
-const id3 = storage.addProduct("Клавиатура", 8, 3000);
-const id4 = storage.addProduct("Мышь", 3, 1200);
-const id5 = storage.addProduct("Монитор", 4, 15000);
+        function getEventStatistics(event) {
+            // Проверяем кеш
+            if (cache.has(event)) {
+                console.log('Результат получен из кеша');
+                return cache.get(event);
+            }
 
-console.log('Все товары:');
-storage.getAllProducts().forEach(product => {
-    console.log(`  ${product.id}: ${product.name} - ${product.quantity}шт. по ${product.price}руб.`);
-});
+            // Выполняем расчёты
+            console.log('Выполняется расчёт');
 
-console.log('\nКоличество позиций:', storage.getPositionsCount());
-console.log('Общая стоимость всех товаров:', storage.getTotalValue(), 'руб.');
+            const availablePlaces = MAX_PLACES - event.participants;
+            const occupancyPercent = Math.round((event.participants / MAX_PLACES) * 100);
 
-const removedCount = storage.removeProductsByName("Мышь");
-console.log(`\nУдалено товаров "Мышь": ${removedCount}`);
-console.log('Количество позиций после удаления:', storage.getPositionsCount());
+            const result = {availablePlaces, occupancyPercent};
 
-storage.updateProductQuantity(id1, 3);
-storage.updateProductPrice(id3, 2500);
-console.log('\nПосле обновления цены и количества:');
-console.log('Общая стоимость:', storage.getTotalValue(), 'руб.');
+            // Сохраняем в кеш
+            cache.set(event, result);
 
-console.log('\nПоиск товаров с "ит":');
-const foundProducts = storage.findProductsByName("ит");
-foundProducts.forEach(product => {
-    console.log(`  ${product.name} - ${product.quantity}шт.`);
-});
-
-console.log('\nДемонстрация Object методов:');
-storage.getProductsObject();
-//444=================================================================
-class FunctionCache {
-    constructor() {
-        this.cache = new WeakMap();
-    }
-
-    createKey(...args) {
-        if (args.length === 1 && typeof args[0] === 'object' && args[0] !== null) {
-            return args[0];
-        }
-        return { args };
-    }
-
-    executeWithCache(func, ...args) {
-        const key = this.createKey(...args);
-        
-        if (this.cache.has(key)) {
-            console.log('Результат взят из кеша');
-            return this.cache.get(key);
+            return result;
         }
 
-        console.log('Выполняем вычисления...');
-        const startTime = performance.now();
-        const result = func(...args);
-        const executionTime = (performance.now() - startTime).toFixed(2);
-        
-        console.log(`Вычисления заняли: ${executionTime}ms`);
-        
-        this.cache.set(key, result);
-        return result;
-    }
+        // Проверка
+        const event = {
+            id: 1,
+            title: 'Вечер настольных игр',
+            participants: 24,
+        };
 
-    hasInCache(...args) {
-        const key = this.createKey(...args);
-        return this.cache.has(key);
-    }
-}
+        console.log(getEventStatistics(event));
+        // Выполняется расчёт
+        // { availablePlaces: 16, occupancyPercent: 60 }
 
-// Функции для демонстрации
-function factorial(n) {
-    if (n <= 1) return 1;
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-        // Немного замедлим для наглядности
-        for (let j = 0; j < 10000; j++) {}
-    }
-    return result;
-}
+        console.log(getEventStatistics(event));
+        // Результат получен из кеша
+        // { availablePlaces: 16, occupancyPercent: 60 }
 
-function expensiveCalculation(el) {
-    let result = 0;
-    for (let i = 0; i < 1000000; i++) {
-        result += Math.sin(el.a) + Math.cos(el.b) + Math.tan(el.c);
-    }
-    return result;
-}
-
-// ДЕМОНСТРАЦИЯ
-console.log('\n=== ЗАДАЧА 4: Кеширование с WeakMap ===');
-const cache = new FunctionCache();
-
-// Создаем внешние объекты-параметры
-const factorialParams1 = { n: 15 };
-const factorialParams2 = { n: 20 };
-const calcParams = { a: 1, b: 2, c: 3 };
-
-console.log('\n--- Демонстрация 1: Факториал ---');
-console.log('Первый вызов factorial с params1:');
-const result1 = cache.executeWithCache(factorial, factorialParams1);
-console.log(`Результат: ${result1}`);
-
-console.log('\nВторой вызов factorial с params1:');
-const result2 = cache.executeWithCache(factorial, factorialParams1);
-console.log(`Результат: ${result2}`);
-
-console.log('\nВызов factorial с params2:');
-const result3 = cache.executeWithCache(factorial, factorialParams2);
-console.log(`Результат: ${result3}`);
-
-
-console.log('\n--- Демонстрация 2: Сложные вычисления ---');
-console.log('Первый вызов с calcParams:');
-const calc1 = cache.executeWithCache(expensiveCalculation, calcParams);
-console.log(`Результат: ${calc1.toFixed(4)}`);
-
-console.log('\nВторой вызов с calcParams:');
-const calc2 = cache.executeWithCache(expensiveCalculation, calcParams);
-console.log(`Результат: ${calc2.toFixed(4)}`);
-
-
-console.log('\n--- Демонстрация 3: Работа с объектами ---');
-const user = { id: 1, name: 'John' };
-
-console.log('Первый вызов с объектом user:');
-const objResult1 = cache.executeWithCache(JSON.stringify, user);
-console.log(`Результат: ${objResult1}`);
-
-console.log('\nВторой вызов с объектом user:');
-const objResult2 = cache.executeWithCache(JSON.stringify, user);
-console.log(`Результат: ${objResult2}`);
-
-// Демонстрация автоматической сборки мусора
-console.log('\n--- Демонстрация автоматической сборки мусора ---');
-let tempObj = { temp: 'data' };
-cache.executeWithCache(JSON.stringify, tempObj);
-console.log('До очистки - есть в кеше?', cache.hasInCache(tempObj));
-tempObj = null;
-console.log('После очистки - объект удален, кеш очистится автоматически');
-
-   </script> 
+        console.log(getEventStatistics({...event}));
+        // Выполняется расчёт  ← новый объект, кеш не сработал
+        // { availablePlaces: 16, occupancyPercent: 60 }
+    </script>
 </body>
+
 </html>
