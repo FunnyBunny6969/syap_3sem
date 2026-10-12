@@ -1,104 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
+    <label for="search">Поиск мероприятий</label>
+    <input id="search" type="search" placeholder="Введите название мероприятия">
+
+
+    <h1>Список мероприятий</h1>
+    <div class="event-card">
+        <h3>Событие 1</h3>
+        <p>Идентификатор: 6969</p>
+        <button id="register-button-6969">Зарегистрироваться</button>
+    </div>
+
+    <div class="event-card">
+        <h3>Событие 2</h3>
+        <p>Идентификатор: 6970</p>
+        <button id="register-button-6970">Зарегистрироваться</button>
+    </div>
+
+
     <script>
-//111=======================================================
-let currentCount = 1;
+        //111=======================================================
+        function debounce(callback, delay) {
+            let timerId = null; 
 
-function makeCounter() {
-    return function() {
-        return currentCount++;
-    };
-}
+            return function (...args) {
+                if (timerId) {
+                    clearTimeout(timerId);
+                }
 
-let counter = makeCounter();
-let counter2 = makeCounter();
-
-alert( counter() ); 
-alert( counter() ); 
-alert( counter2() );
-alert( counter2() ); 
-//222=======================================================
-function calculateVolume(length) {
-    return function(width) {
-        return function(height) {
-            return length * width * height;
-        };
-    };
-}
-
-const volume1 = calculateVolume(2)(3)(4);
-console.log(volume1); 
-
-const volume2 = calculateVolume(5)(2)(10);
-console.log(volume2); 
+                timerId = setTimeout(() => {
+                    callback.apply(this, args);
+                }, delay);
+            };
+        }
 
 
-function createAreaCalculator(fixedLength) {
-    return function(width, height) {
-        return fixedLength * width * height;
-    };
-}
+        function searchEvents(query) {
+            console.log(`Выполняется поиск: ${query}`);
+        }
 
-const base2Volume = createAreaCalculator(2);
+        const debouncedSearch = debounce(searchEvents, 500);
+        debouncedSearch('j');
+        debouncedSearch('ja');
+        debouncedSearch('javascript');
 
-console.log(base2Volume(3, 4));  
-console.log(base2Volume(3, 10)); 
-console.log(base2Volume(3, 1));  
-//333=======================================================
-let position = {x: 0, y: 0, z: 0};
+        const searchInput = document.querySelector('#search');
+        if (searchInput) {
+            const handleSearch = debounce(searchEvents, 500);
+            searchInput.addEventListener('input', (event) => {
+                handleSearch(event.target.value);
+            });
+        }
 
-function* move() {
-    while(true) {
-        let cmd = prompt('CHOOSE DIRECTION (left/right/up/down/forward/back):');
+        //222=======================================================
+        function once(callback) {
+            let hasBeenCalled = false; 
+            let result;               
+
+            return function (...args) {
+                if (!hasBeenCalled) {
+                    hasBeenCalled = true;
+                    result = callback.apply(this, args); 
+                }
+                return result; 
+            };
+        }
+
+        function submitForm() {
+            console.log('Форма отправлена');
+        }
+        const submitOnce = once(submitForm);
+        submitOnce(); 
+        submitOnce(); 
+        submitOnce(); 
+
         
-        for(let i = 0; i < 10; i++) {
-            if(cmd === 'left') position.x--;
-            if(cmd === 'right') position.x++;
-            if(cmd === 'up') position.y++;
-            if(cmd === 'down') position.y--;
-            if(cmd === 'forward') position.z++;
-            if(cmd === 'back') position.z--;
-            
-            console.log(`STEP ${i+1}:`, position);
+        const initialize = once(() => {
+            return 'Приложение инициализировано';
+        });
+        console.log(initialize()); 
+        console.log(initialize()); 
+
+        //333=======================================================
+        const filterBy = (property) => (value) => (items) => {
+            return items.filter(item => item[property] === value);
+        };
+
+        const events = [
+            { id: 1, title: 'JavaScript Meetup', category: 'education', isActive: true },
+            { id: 2, title: 'University Run', category: 'sport', isActive: false },
+            { id: 3, title: 'React Workshop', category: 'education', isActive: true },
+        ];
+
+        const filterByCategory = filterBy('category'); 
+        const filterEducationEvents = filterByCategory('education'); 
+        console.log(filterEducationEvents(events)); 
+
+        //444=======================================================
+        function* createBatches(items, batchSize) {
+            if (!Number.isInteger(batchSize) || batchSize <= 0) {
+                throw new Error('Размер порции (batchSize) должен быть положительным целым числом.');
+            }
+
+            let index = 0;
+
+            while (index < items.length) {
+                yield items.slice(index, index + batchSize);
+                index += batchSize; 
+            }
         }
-        yield position; 
-    }
-}
 
-const movement = move();
-console.log(movement.next());
-//444=======================================================
-var myGlobalVar = "GLOBAL VAR";
-function myGlobalFunc() {
-    return "GLOBAL FUNC";
-}
+        const users = ['Анна', 'Иван', 'Мария', 'Алексей', 'Ольга', 'Максим', 'Елена'];
+        const batches = createBatches(users, 3);
 
-console.log("=== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И ФУНКЦИИ ===");
-for (let key in window) {
-    if (window.hasOwnProperty(key) && (key === 'myGlobalVar' || key === 'myGlobalFunc')) {
-        if (typeof window[key] === 'function') {
-            console.log(`ФУНКЦИЯ: ${key} = ${window[key]()}`);
-        } else {
-            console.log(`ПЕРЕМЕННАЯ: ${key} = ${window[key]}`);
+        console.log(batches.next()); 
+        console.log(batches.next()); 
+        console.log(batches.next()); 
+        console.log(batches.next()); 
+
+        //555=======================================================
+        function createRegistrationHandler(eventId, callback) {
+            return function (event) {
+                callback(eventId, event);
+            };
         }
-    }
-}
 
-window.myGlobalVar = "Переопределенная переменная";
-window.myGlobalFunc = function() {
-    return "Переопределенная функция";
-};
+        function registerForEvent(eventId, event) {
+            console.log(`Регистрация на мероприятие ${eventId}`);
+            if (event) {
+                console.log(`Тип события: ${event.type}`);
+            }
+        }
 
-console.log("=== ПОСЛЕ ПЕРЕОПРЕДЕЛЕНИЯ ===");
-console.log(myGlobalVar); 
-console.log(myGlobalFunc()); 
-//==========================================================
+        const handleFirstEvent = createRegistrationHandler(101, registerForEvent);
+        handleFirstEvent(); 
+
+        // Пример интеграции с кнопкой:
+        const btn1 = document.querySelector('#register-button-6969');
+        if (btn1) {
+            btn1.addEventListener('click', createRegistrationHandler(6969, registerForEvent));
+        }
+        const btn2 = document.querySelector('#register-button-6970');
+        if (btn2) {
+            btn2.addEventListener('click', createRegistrationHandler(6970, registerForEvent));
+        }
+
     </script>
 </body>
+
 </html>
